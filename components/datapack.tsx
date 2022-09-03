@@ -134,7 +134,7 @@ export default function Datapack({ data, minHeight }: any) {
 
     async function updateDownloadCounter(){
 
-        const res = await fetch('/api/counter')
+        const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/counter`)
         const data = await res.json()
 
         setDownloadNumber(data.download);
@@ -150,7 +150,7 @@ export default function Datapack({ data, minHeight }: any) {
                     modules.push(module)
                 }
             })
-            setUrlDatapack(`api/datapacks/${selectedVersion.canal}/${selectedVersion.version}/${selectedVersion.commit}/${modules.join('|')}`)
+            setUrlDatapack(`/api/datapacks/${selectedVersion.canal}/${selectedVersion.version}/${selectedVersion.commit}/${modules.join('|')}`)
         } else {
             changeVersion(LastRelease);
         }
@@ -162,7 +162,7 @@ export default function Datapack({ data, minHeight }: any) {
         if (selectedVersion) {
             await setOpenSnackPreparing(true);
             await setIsDownloading(true)
-            const res = await fetch(urlDatapack)
+            const res = await fetch(`${process.env.NEXT_PUBLIC_URL}urlDatapack`)
             const data = await res.arrayBuffer()
             fileDownload(data, `Glibs-${selectedVersion.version}.zip`);
             await setIsDownloading(false)

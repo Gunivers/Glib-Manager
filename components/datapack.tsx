@@ -63,6 +63,8 @@ export default function Datapack({ data, minHeight }: any) {
     let [devVersion, setDevVersion] = useState(false);
     let [isDownloading, setIsDownloading] = useState(false);
 
+    let [downloadNumber, setDownloadNumber] = useState(1);
+
     const changeVersion = useCallback((version: DatapackVersion | null) => {
         if (version == null) { return }
         let updatedModules: IDictionary = {}
@@ -130,7 +132,16 @@ export default function Datapack({ data, minHeight }: any) {
 
     }
 
+    async function updateDownloadCounter(){
+
+        const res = await fetch('/api/counter')
+        const data = await res.json()
+
+        setDownloadNumber(data.download);
+    }
+    updateDownloadCounter()
     useEffect(() => {
+
 
         if (selectedVersion) {
             let modules = [] as unknown as ListModules;
@@ -211,7 +222,7 @@ export default function Datapack({ data, minHeight }: any) {
                                     <Typography variant="body1" color="text.secondary">
                                         <CountUp
                                             start={0}
-                                            end={160527}
+                                            end={downloadNumber}
                                             duration={2.75}
                                             separator=" "
                                             suffix=" downloads"

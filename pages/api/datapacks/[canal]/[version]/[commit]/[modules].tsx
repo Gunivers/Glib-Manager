@@ -56,7 +56,7 @@ export default function (req: any, res: any) {
   }
 
   //let zipName = `glib-${req.query.canal}-${req.query.version}-${reqModules.join('+')}.zip`
-  let zipName = `Glibs-${req.query.canal}.zip`
+  let zipName = reqModules.length == 1 ? `Glibs-${reqModules[0]}.zip` : `Glibs-${req.query.canal}.zip`
 
 
   // zip.writeZip(zipName, path.resolve('datapacks/downloads/'))

@@ -9,6 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import fileDownload from 'js-file-download'
 import LoadingButton from '@mui/lab/LoadingButton';
 import CountUp from 'react-countup';
+import { useSnackbar } from 'notistack';
 
 interface IDictionary {
     [index: string]: boolean;
@@ -62,8 +63,10 @@ export default function Datapack({ data, minHeight }: any) {
     let [urlDatapack, setUrlDatapack] = useState('');
     let [devVersion, setDevVersion] = useState(false);
     let [isDownloading, setIsDownloading] = useState(false);
-
+    
     let [downloadNumber, setDownloadNumber] = useState(1);
+
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const changeVersion = useCallback((version: DatapackVersion | null) => {
         if (version == null) { return }
@@ -160,28 +163,18 @@ export default function Datapack({ data, minHeight }: any) {
 
     async function downloadFromButton() {
         if (selectedVersion) {
-            await setOpenSnackPreparing(true);
+            enqueueSnackbar(t('datapack.download.startLoading'), {variant: "info"});
             await setIsDownloading(true)
-            const res = await fetch(`${process.env.NEXT_PUBLIC_URL}urlDatapack`)
+            const res = await fetch(`${process.env.NEXT_PUBLIC_URL}${urlDatapack}`)
             const data = await res.arrayBuffer()
             fileDownload(data, `Glibs-${selectedVersion.version}.zip`);
             await setIsDownloading(false)
-            await setOpenSnackReady(true);
+            await enqueueSnackbar(t('datapack.download.success'), {variant: "success"});
         }
     }
 
     return (
         <>
-            <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} onClose={handleCloseSnack} sx={{ zIndex: (theme) => theme.zIndex.drawer + 10 }} open={openSnackPreparing} autoHideDuration={10000}>
-                <Alert elevation={6} variant="filled" onClose={handleCloseSnack} severity="info" sx={{ width: '100%' }}>
-                    {t('datapack.download.startLoading')}
-                </Alert>
-            </Snackbar>
-            <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} onClose={handleCloseSnack} sx={{ zIndex: (theme) => theme.zIndex.drawer + 10 }} open={openSnackReady} autoHideDuration={10000}>
-                <Alert elevation={6} variant="filled" onClose={handleCloseSnack} severity="success" sx={{ width: '100%' }}>
-                    {t('datapack.download.success')}
-                </Alert>
-            </Snackbar>
             <Grid container columns={{ xs: 1, md: 2, lg: 3 }} spacing={4} sx={{ mb: 2, mt: 0, px: { xs: 4, md: 14 }, '& > *': { pt: "0!important" as "0", mt: "32px!important" as "32px", '&.heightViewport': { maxHeight: { xs: 'auto', md: `calc(${minHeight} - 48px)` } } } }}>
                 <Grid item xs={1} md={2} lg={1} sx={{ overflowY: 'auto', scrollbarWidth: 'thin', height: { xs: 'auto', lg: `calc(${minHeight} - 48px)` } }}>
                     <Stack spacing={4}>
